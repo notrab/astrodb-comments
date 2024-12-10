@@ -1,0 +1,58 @@
+---
+import { actions, isInputError } from "astro:actions";
+
+interface Props {
+    postSlug: string;
+}
+
+const { postSlug } = Astro.props;
+
+const result = Astro.getActionResult(actions.addComment);
+const inputErrors = isInputError(result?.error) ? result.error.fields : {};
+---
+
+<form method="POST" action={actions.addComment} class="mb-8">
+    <input type="hidden" name="postSlug" value={postSlug} />
+
+    <div class="mb-4">
+        <label for="name">Name:</label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            class="w-full p-2 border rounded"
+        />
+        {inputErrors.name && <p class="text-red-500">{inputErrors.name}</p>}
+    </div>
+
+    <div class="mb-4">
+        <label for="email">Email:</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="w-full p-2 border rounded"
+        />
+        {inputErrors.email && <p class="text-red-500">{inputErrors.email}</p>}
+    </div>
+
+    <div class="mb-4">
+        <label for="message">Comment:</label>
+        <textarea
+            id="message"
+            name="message"
+            required
+            class="w-full p-2 border rounded"></textarea>
+        {
+            inputErrors.message && (
+                <p class="text-red-500">{inputErrors.message}</p>
+            )
+        }
+    </div>
+
+    <button type="submit" class="px-4 py-2 bg-purple-500 text-white rounded">
+        Add Comment
+    </button>
+</form>
